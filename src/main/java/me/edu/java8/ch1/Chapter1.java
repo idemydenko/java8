@@ -3,12 +3,16 @@ package me.edu.java8.ch1;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class Chapter1 {
     public static void main(String[] args) {
-//        task1();
-        task2("D:/");
+//      task1();
+//      task2("D:/");
+//    	task3("D:/Temp");
+//    	task4("D:/Temp");
+    	task6();
     }
     
     public static void task1() {
@@ -31,7 +35,38 @@ public class Chapter1 {
    public static void task3(String path) {
        File root = new File(path);
        
-       Stream.of(root.listFiles(File::isDirectory)).map(File::getName).forEach(System.out::println);
+       Stream.of(root.listFiles(
+    		   (f, n) -> new File(f, n).isFile() && n.endsWith(".pdf")
+    		   ))
+       .map(File::getName).forEach(System.out::println);
+   }
+   
+   public static void task4(String path) {
+       File root = new File(path);
+       
+       Stream.of(root.listFiles())
+       .sorted((f1, f2) -> {
+    	   if (f1.isFile() && f2.isDirectory()) {
+    		   return -1;
+    	   }
+    	   
+    	   if (f1.isDirectory() && f2.isFile()) {
+    		   return 1;
+    	   }
+    	   return -f1.getName().compareToIgnoreCase(f2.getName());
+       })
+       .map(File::getName).forEach(System.out::println);
+   }
+   
+   public static void task6() {
+	   new Thread(() -> {		   
+		   System.out.println("Zzz...!");
+		   Thread.sleep(1000);
+	   }).start();
    }
 
+   public  static <T> Consumer<T> unchecked(Consumer<T> checked) {
+	   
+   }
  }
+
