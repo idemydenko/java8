@@ -1,9 +1,11 @@
 package me.edu.java8.ch1;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Chapter1 {
@@ -13,7 +15,9 @@ public class Chapter1 {
 		// task3("D:/Temp");
 		// task4("D:/Temp");
 //		task6();
-		task7();
+//		task7();
+//	    task8();
+	    task9();
 	}
 
 	public static void task1() {
@@ -67,4 +71,30 @@ public class Chapter1 {
 		RunnableMerge.andThan(() -> System.out.println("First run"), () -> System.out.println("Second run"));
 	}
 	
+	
+	public static void task8() {
+	    String[] names = { "Peter", "Paul", "Mary" };
+	    
+	    List<Runnable> runners = new ArrayList<>();
+	    
+	    for (String name : names) {
+            runners.add(() -> System.out.println(name));
+        }
+
+//        for (int i = 0; i < names.length; i++) {
+//            runners.add(() -> System.out.println(names[i]));
+//        }
+
+	    for (Runnable runnable : runners) {
+            new Thread(runnable).start();
+        }
+	}
+	
+	public static void task9() {
+	    Collection2<Integer> collection = new ArrayList2<>();
+	    
+	    IntStream.range(-5, 5).forEach(collection::add);
+	    
+	    collection.forEachIf(System.out::println, (e) -> e > 2);
+	}
 }
