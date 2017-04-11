@@ -91,10 +91,10 @@ public class Chapter1 {
 	}
 	
 	public static void task9() {
-	    Collection2<Integer> collection = new ArrayList2<>();
-	    
-	    IntStream.range(-5, 5).forEach(collection::add);
-	    
-	    collection.forEachIf(System.out::println, (e) -> e > 2);
+//	    Collection2<Integer> collection = new ArrayList2<>();
+//	    
+//	    IntStream.range(-5, 5).forEach(collection::add);
+//	    
+//	    collection.forEachIf(System.out::println, (e) -> e > 2);
 	}
 }
