@@ -1,3 +1,5 @@
+package ch2.sec05;
+
 import java.io.*;
 import java.nio.charset.*;
 import java.nio.file.*;
@@ -38,6 +40,11 @@ public class Test {
       Stream<String> sorted = words.sorted();
       show("sorted", sorted);
 
+      words = wordList.stream();
+      Stream<String> reversSorted = words.sorted( (s1, s2) -> -s1.compareToIgnoreCase(s2));
+      show("reversSorted", reversSorted);
+
+      
       words = wordList.stream();
       Stream<String> distinctSorted = words.distinct().sorted();
       show("distinctSorted", distinctSorted);
