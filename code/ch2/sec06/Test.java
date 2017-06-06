@@ -15,8 +15,9 @@ public class Test {
       Stream<String> words = wordList.stream();
 
       Optional<String> largest = words.max(String::compareToIgnoreCase);
-      if (largest.isPresent())
+      if (largest.isPresent()) {
          System.out.println("largest: " + largest.get());
+      }
 
       words = wordList.stream();
       boolean aWordStartsWithQ

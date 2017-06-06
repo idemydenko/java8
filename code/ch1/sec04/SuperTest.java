@@ -1,3 +1,5 @@
+package ch1.sec04;
+
 public class SuperTest {
    public static void main(String[] args) {
       class Greeter {

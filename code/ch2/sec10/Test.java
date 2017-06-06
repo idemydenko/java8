@@ -1,3 +1,5 @@
+package ch2.sec10;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -49,14 +51,19 @@ public class Test {
       System.out.println("languageNames: " + languageNames);
 
       locales = Stream.of(Locale.getAvailableLocales());
+      
       Map<String, Set<String>> countryLanguageSets = locales.collect(
          Collectors.toMap(
             Locale::getDisplayCountry,
-            l -> Collections.singleton(l.getDisplayLanguage()),
+            l -> {
+                return Collections.singleton(l.getDisplayLanguage());
+            },
             (a, b) -> { // union of a and b
                Set<String> r = new HashSet<>(a); 
                r.addAll(b);
-               return r; }));
+               return r; 
+             })
+         );
       System.out.println("countryLanguageSets: " + countryLanguageSets);
    }
 }

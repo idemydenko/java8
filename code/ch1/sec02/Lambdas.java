@@ -1,3 +1,5 @@
+package ch1.sec02;
+
 import java.util.*;
 import javafx.event.*;
 

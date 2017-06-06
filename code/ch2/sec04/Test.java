@@ -10,9 +10,9 @@ public class Test {
       final int SIZE = 10;
       List<T> firstElements = stream.limit(SIZE + 1).collect(Collectors.toList());
       System.out.print(title + ": ");
-      if (firstElements.size() <= SIZE)
+      if (firstElements.size() <= SIZE) {
          System.out.println(firstElements);
-      else {
+      } else {
          firstElements.remove(SIZE);
          String out = firstElements.toString();            
          System.out.println(out.substring(0, out.length() - 1) + ", ...]");
@@ -42,9 +42,11 @@ public class Test {
          characterStream("World"));
       show("combined", combined);
 
-      Object[] powers = Stream.iterate(1.0, p -> p * 2)
-         .peek(e -> System.out.println("Fetching " + e))
-         .limit(20).toArray();
+      Object[] powers = Stream
+              .iterate(1.0, p -> p * 2)
+              .peek(e -> System.out.println("Fetching " + e))
+              .limit(20)
+              .toArray();
       System.out.println(Arrays.asList(powers));
    }
 }

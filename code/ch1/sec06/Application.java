@@ -1,3 +1,5 @@
+package ch1.sec06;
+
 import java.nio.file.*;
 import java.util.*;
 

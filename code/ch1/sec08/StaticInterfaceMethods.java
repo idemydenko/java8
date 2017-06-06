@@ -1,3 +1,5 @@
+package ch1.sec08;
+
 public class StaticInterfaceMethods {
    public static void main(String[] args) {
       Greeter worldGreeter = Greeter.newInstance("World");
