@@ -3,8 +3,6 @@ package ch2.sec12;
 import java.io.*;
 import java.nio.charset.*;
 import java.nio.file.*;
-import java.util.*;
-import java.util.function.*;
 import java.util.stream.*;
 
 public class Test {

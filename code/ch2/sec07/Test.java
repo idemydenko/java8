@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.*;
 
 public class Test {
    public static void main(String[] args) throws IOException {
@@ -18,7 +17,7 @@ public class Test {
       Set<String> results = new HashSet<>();
       optionalValue.ifPresent(results::add);
       Optional<Boolean> added = optionalValue.map(results::add);
-      System.out.println(added);
+      System.out.println("added: " + added);
         
       optionalValue = wordList.stream().filter(s -> s.contains("fred")).findFirst();
       System.out.println(optionalValue.orElse("No word") + " contains fred");
@@ -35,7 +34,6 @@ public class Test {
       } catch (Throwable t) {
          t.printStackTrace();
       }
-
       
       System.out.println(inverse(4.0).flatMap(Test::squareRoot));
       System.out.println(inverse(-1.0).flatMap(Test::squareRoot));

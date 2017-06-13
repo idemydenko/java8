@@ -3,7 +3,6 @@ package ch2.sec11;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.function.*;
 import java.util.stream.*;
 import static java.util.stream.Collectors.*;
 
@@ -29,32 +28,37 @@ public class Test {
    }
 
    public static void main(String[] args) throws IOException {
-      Stream<Locale> locales = Stream.of(Locale.getAvailableLocales());
+
+       Stream<Locale> locales = Stream.of(Locale.getAvailableLocales());
       Map<String, List<Locale>> countryToLocales = locales.collect(
-         Collectors.groupingBy(Locale::getCountry));
+         Collectors.groupingBy(Locale::getCountry)
+      );
       System.out.println("Swiss locales: " + countryToLocales.get("CH"));   
 
       locales = Stream.of(Locale.getAvailableLocales());
       Map<Boolean, List<Locale>> englishAndOtherLocales = locales.collect(
-         Collectors.partitioningBy(l -> l.getLanguage().equals("en")));
+         Collectors.partitioningBy(l -> l.getLanguage().equals("en"))
+      );
       System.out.println("English locales: " + englishAndOtherLocales.get(true));
 
       locales = Stream.of(Locale.getAvailableLocales());
       Map<String, Set<Locale>> countryToLocaleSet = locales.collect(
-         groupingBy(Locale::getCountry, toSet()));
+         groupingBy(Locale::getCountry, toSet())
+      );
       System.out.println("countryToLocaleSet: " + countryToLocaleSet);   
 
       locales = Stream.of(Locale.getAvailableLocales());
       Map<String, Long> countryToLocaleCounts = locales.collect(
-         groupingBy(Locale::getCountry, counting()));
+         groupingBy(Locale::getCountry, counting())
+      );
       System.out.println("countryToLocaleCounts: " + countryToLocaleCounts);   
 
-      Stream<City> cities = readCities("cities.txt");
+      Stream<City> cities = readCities("../cities.txt");
       Map<String, Integer> stateToCityPopulation = cities.collect(
          groupingBy(City::getState, summingInt(City::getPopulation)));
       System.out.println("stateToCityPopulation: " + stateToCityPopulation);
 
-      cities = readCities("cities.txt");
+      cities = readCities("../cities.txt");
       Map<String, Optional<String>> stateToLongestCityName = cities.collect(
          groupingBy(City::getState, 
             mapping(City::getName,
@@ -69,19 +73,19 @@ public class Test {
                toSet())));
       System.out.println("countryToLanguages: " + countryToLanguages);   
 
-      cities = readCities("cities.txt");
+      cities = readCities("../cities.txt");
       Map<String, IntSummaryStatistics> stateToCityPopulationSummary = cities.collect(
          groupingBy(City::getState,
             summarizingInt(City::getPopulation)));
       System.out.println(stateToCityPopulationSummary.get("NY"));
 
-      cities = readCities("cities.txt");
+      cities = readCities("../cities.txt");
       Map<String, String> stateToCityNames = cities.collect(
          groupingBy(City::getState,
             reducing("", City::getName,
                (s, t) -> s.length() == 0 ? t : s + ", " + t)));
 
-      cities = readCities("cities.txt");
+      cities = readCities("../cities.txt");
       stateToCityNames = cities.collect(
          groupingBy(City::getState,
             mapping(City::getName,
