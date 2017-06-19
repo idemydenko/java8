@@ -1,3 +1,5 @@
+package ch3.sec08;
+
 import java.util.function.*;
 
 public class ExceptionDemo {

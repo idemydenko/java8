@@ -1,3 +1,5 @@
+package ch3.sec03;
+
 import java.util.function.*;
 import javafx.application.*;
 import javafx.scene.*;

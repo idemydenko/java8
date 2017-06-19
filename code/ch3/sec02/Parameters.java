@@ -1,3 +1,5 @@
+package ch3.sec02;
+
 import java.util.function.*;
 
 public class Parameters {

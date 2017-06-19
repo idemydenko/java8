@@ -1,3 +1,5 @@
+package ch3.sec01;
+
 import java.util.function.*;
 import java.util.logging.*;
 
