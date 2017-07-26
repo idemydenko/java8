@@ -1,21 +1,26 @@
 package me.edu.java8.ch3;
 
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
+
+import javafx.scene.paint.Color;
 
 
 
 public final class Chapter3 {
 
     public static void main(String[] args) throws Exception {
-        task7();
+        task9();
     }
 
     static void task1() throws Exception {
@@ -92,4 +97,84 @@ public final class Chapter3 {
             return rs1.toString().compareTo(rs2.toString());
         };
     }
+    
+    static void task9() throws Exception {
+        int result = lexicographicComparator("f1", "f2").compare("sq", "sq");
+        System.out.println(result);
+    }
+    
+    static <T> Comparator<T> lexicographicComparator(String... fieldNames) {
+        return (o1, o2) -> {
+            if (o1 == null) {
+                return -1;
+            }
+            
+            if (o2 == null) {
+                return 1;
+            }
+            
+            for (String name : fieldNames) {
+                Field f1 = null;
+                try {
+                    f1 = o1.getClass().getField(name); 
+                } catch (NoSuchFieldException e) {}
+                
+                Field f2 = null; 
+                try {
+                    f2 = o2.getClass().getField(name); 
+                } catch (NoSuchFieldException e) {}
+                
+                if (f1 == null && f2 == null) {
+                    continue;
+                }
+                
+                if (f1 == null) {
+                    return -1;
+                }
+                
+                if (f2 == null) {
+                    return 1;
+                }
+                
+                f1.setAccessible(true);
+                f2.setAccessible(true);
+                
+                Object v1 = null;
+                try {
+                    v1 = f1.get(o1);
+                } catch (IllegalAccessException e) {}
+                
+                Object v2 = null;
+                try {
+                    v2 = f2.get(o2);
+                } catch (IllegalAccessException e) {}
+
+                if (v1 == null && v2 == null) {
+                    continue;
+                }
+                
+                if (v1 == null) {
+                    return -1;
+                }
+                
+                if (v2 == null) {
+                    return 1;
+                }
+              
+                if (!v1.equals(v2)) {
+                    return v1.toString().compareTo(v2.toString());
+                }
+            }
+            
+            return 0;
+        };
+    }
+    
+    static void task10() throws Exception {
+        UnaryOperator<Color> op = Color::brighter;
+        op.compose(Color::grayscale);
+        
+        System.out.println(result);
+    }
+    
 }
