@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 
@@ -171,10 +172,11 @@ public final class Chapter3 {
     }
     
     static void task10() throws Exception {
+    	final Image im = null;
+    	
         UnaryOperator<Color> op = Color::brighter;
-        op.compose(Color::grayscale);
+//        Chapter3task5.transform(im, op.compose(Color::grayscale));
         
-        System.out.println(result);
     }
     
 }
