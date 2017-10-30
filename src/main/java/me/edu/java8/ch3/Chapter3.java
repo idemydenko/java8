@@ -5,16 +5,12 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 
 
@@ -172,9 +168,9 @@ public final class Chapter3 {
     }
     
     static void task10() throws Exception {
-    	final Image im = null;
+//    	final Image im = null;
     	
-        UnaryOperator<Color> op = Color::brighter;
+//        UnaryOperator<Color> op = Color::brighter;
 //        Chapter3task5.transform(im, op.compose(Color::grayscale));
         
     }

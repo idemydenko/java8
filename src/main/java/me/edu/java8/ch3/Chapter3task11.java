@@ -1,6 +1,5 @@
 package me.edu.java8.ch3;
 
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import javafx.application.Application;
@@ -33,42 +32,22 @@ public class Chapter3task11 extends Application {
         return out;
     }
 
-    public static Image transform(Image in, int frameSize, UnaryOperator<Color> op) {
-//        final int width = (int) in.getWidth();
-//        final int height = (int) in.getHeight();
-//
-//        final WritableImage out = new WritableImage(width, height);
-//
-//        for (int x = 0; x < width; x++) {
-//            for (int y = 0; y < height; y++) {
-//            	final Color color = in.getPixelReader().getColor(x, y);
-//            	
-//            	UnaryOperator<Color> o = UnaryOperator.identity();
-//                if (x <= frameSize || x >= in.getWidth() - frameSize || y <= frameSize || y >= in.getHeight() - frameSize) {
-//                	o = op;
-//                }
-//                
-//                out.getPixelWriter().setColor(x, y, o.apply(color));
-//            }
-//        }
-//        return out;
-    	return transform(in, ColorTransformer.from(op));
-    }
-
     public void start(Stage stage) throws Exception {
         final int frameSize = 10;
         final Image srcImg = new Image("queen-mary.png");
-               
-        final Image resImg = transform(srcImg, (x, y, c) -> {           
-           if (x > frameSize && x < srcImg.getWidth() - frameSize && y > frameSize && y < srcImg.getHeight() - frameSize) {
-               return c;
-           }
-           return Color.AQUAMARINE;
-        });
+           
+        final ColorTransformer ct = (x, y, c) -> {           
+            if (x > frameSize && x < srcImg.getWidth() - frameSize && y > frameSize && y < srcImg.getHeight() - frameSize) {
+                return c;
+            }
+            return Color.AQUAMARINE;
+        };
+         
+        final ColorTransformer ct2 =  ColorTransformer.from(Color::grayscale);
+        
+        final Image resImg = transform(srcImg, ct);
 
-        final Image resImg2 = transform(srcImg, frameSize, (c) -> {           
-            return Color.CORAL;
-         });
+        final Image resImg2 = transform(srcImg, ColorTransformer.compose(ct2, ct));
 
         
         final Stream<ImageView> views = Stream.of(srcImg, resImg, resImg2).map(ImageView::new);
