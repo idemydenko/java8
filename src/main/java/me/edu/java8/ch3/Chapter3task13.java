@@ -15,6 +15,29 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 class LatentImage2 {
+    
+    static class Op {
+        final boolean now;
+        final ColorsTransformer ct;
+        
+        public Op(ColorsTransformer ct, boolean now) {
+            this.ct = ct;
+            this.now = now;
+        }
+
+        public Op(ColorsTransformer ct) {
+            this(ct, false);
+        }
+        
+        public ColorsTransformer ct() {
+            return ct;
+        }
+        
+        public boolean now() {
+            return now;
+        }
+    }
+    
     private Image in;
     private List<ColorTransformer> pendingOperations;
 
@@ -35,7 +58,22 @@ class LatentImage2 {
         return this;
     }
 
-    
+    LatentImage2 transform(ColorsTransformer ct) {
+        Image img = applyPendings();
+        transform0(ct, img);
+        return this;
+    }
+
+    private void transform0(ColorsTransformer ct, Image i mage) {
+        
+    }
+
+    private Image applyPendings() {
+        final Image result = toImage();
+        pendingOperations.clear();
+        return result;
+    }
+
     public Image toImage() {
         int width = (int) in.getWidth();
         int height = (int) in.getHeight();
@@ -43,8 +81,9 @@ class LatentImage2 {
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++) {
                 Color c = in.getPixelReader().getColor(x, y);
-                for (ColorTransformer t : pendingOperations)
+                for (ColorTransformer t : pendingOperations) {
                     c = t.apply(x, y, c);
+                }
                 out.getPixelWriter().setColor(x, y, c);
             }
         return out;
