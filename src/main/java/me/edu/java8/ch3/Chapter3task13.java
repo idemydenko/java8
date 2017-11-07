@@ -16,28 +16,6 @@ import javafx.stage.Stage;
 
 class LatentImage2 {
     
-    static class Op {
-        final boolean now;
-        final ColorsTransformer ct;
-        
-        public Op(ColorsTransformer ct, boolean now) {
-            this.ct = ct;
-            this.now = now;
-        }
-
-        public Op(ColorsTransformer ct) {
-            this(ct, false);
-        }
-        
-        public ColorsTransformer ct() {
-            return ct;
-        }
-        
-        public boolean now() {
-            return now;
-        }
-    }
-    
     private Image in;
     private List<ColorTransformer> pendingOperations;
 
@@ -60,12 +38,21 @@ class LatentImage2 {
 
     LatentImage2 transform(ColorsTransformer ct) {
         Image img = applyPendings();
-        transform0(ct, img);
+        in = transform0(img, ct);
         return this;
     }
 
-    private void transform0(ColorsTransformer ct, Image i mage) {
-        
+    private Image transform0(Image image, ColorsTransformer ct) {
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+        WritableImage out = new WritableImage(width, height);
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++) {
+                Color c = image.getPixelReader().getColor(x, y);
+                c = ct.apply(image, x, y, c);
+                out.getPixelWriter().setColor(x, y, c);
+            }
+        return out;
     }
 
     private Image applyPendings() {
@@ -100,8 +87,10 @@ public class Chapter3task13 extends Application {
         Image image = new Image("eiffel-tower.jpg");
         int frameSize = 10;
         
-        Image finalImage = LatentImage2.from(image).transform(Color::brighter)
-                .transform(Color::grayscale)
+        Image finalImage = LatentImage2.from(image)
+//                .transform(Color::brighter)                
+//                .transform(Color::grayscale)
+                .transform(blur())
                 .transform((x, y, c) -> {           
                     if (x > frameSize && x < image.getWidth() - frameSize && y > frameSize && y < image.getHeight() - frameSize) {
                         return c;
@@ -112,5 +101,30 @@ public class Chapter3task13 extends Application {
         stage.setScene(new Scene(
                 new HBox(new ImageView(image), new ImageView(finalImage))));
         stage.show();
+    }
+    
+    ColorsTransformer blur() {
+        return (img, x, y, c) -> {
+            int i = x > 0 ? x - 1 : x;
+            int j = y > 0 ? y - 1 : y;
+            int w = x < img.getWidth() - 1 ? x + 1 : (int) img.getWidth() - 1;  
+            int h = y < img.getHeight() - 1 ? y + 1 : (int) img.getHeight() - 1;
+            
+            double r = 0;
+            double g = 0;
+            double b = 0;
+            int count = (w - i + 1) * (h - j + 1) / 2;
+            
+            for (; i <= w; i++) {
+                for (; j <= h; j++) {
+                    Color color = img.getPixelReader().getColor(i, j);
+                    r += color.getRed();
+                    g += color.getGreen();
+                    b += color.getBlue();
+                }
+            }
+            
+            return Color.color(r/count, g/count, b/count);
+        };
     }
 }
