@@ -90,7 +90,7 @@ public class Chapter3task13 extends Application {
         Image finalImage = LatentImage2.from(image)
 //                .transform(Color::brighter)                
 //                .transform(Color::grayscale)
-                .transform(blur())
+                .transform(edge())
                 .transform((x, y, c) -> {           
                     if (x > frameSize && x < image.getWidth() - frameSize && y > frameSize && y < image.getHeight() - frameSize) {
                         return c;
@@ -127,4 +127,21 @@ public class Chapter3task13 extends Application {
             return Color.color(r/count, g/count, b/count);
         };
     }
+    
+    ColorsTransformer edge() {
+        return (img, x, y, c) -> {
+            Color w = x > 0 ? img.getPixelReader().getColor(x - 1, y) : Color.BLACK;
+            Color n = y > 0 ? img.getPixelReader().getColor(x, y - 1) : Color.BLACK;
+            Color e = x < img.getWidth() - 1 ? img.getPixelReader().getColor(x + 1, y) : Color.BLACK;  
+            Color s = y < img.getHeight() - 1 ? img.getPixelReader().getColor(x, y + 1) : Color.BLACK;
+            Color cc = img.getPixelReader().getColor(x, y);
+            
+            double red = Math.min(1, Math.abs(4 * cc.getRed() - w.getRed() - n.getRed() - e.getRed() - s.getRed()));
+            double green = Math.min(1, Math.abs(4 * cc.getGreen() - w.getGreen() - n.getGreen() - e.getGreen() - s.getGreen()));
+            double blue = Math.min(1, Math.abs(4 * cc.getBlue() - w.getBlue() - n.getBlue() - e.getBlue() - s.getBlue()));
+
+            return Color.color(red, green, blue);
+        };
+    }
+
 }
