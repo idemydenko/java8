@@ -19,7 +19,7 @@ public class Pair<T> {
         return second;
     }
 
-    public <U> Pair<U> map(Function<T, U> mapper) {
+    public <U> Pair<U> map(Function<? super T, ? extends U> mapper) {
         return new Pair<U>(mapper.apply(first), mapper.apply(second));
     }
     
