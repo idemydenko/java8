@@ -8,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.stage.*;
+import me.edu.java8.ch3.transformers.ColorTransformer;
 
 class LatentImage {
     private Image in;

@@ -1,4 +1,4 @@
-package me.edu.java8.ch3;
+package me.edu.java8.ch3.transformers;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;

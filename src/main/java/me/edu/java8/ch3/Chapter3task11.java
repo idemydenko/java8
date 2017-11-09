@@ -10,6 +10,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import me.edu.java8.ch3.transformers.ColorTransformer;
 
 public class Chapter3task11 extends Application {
 

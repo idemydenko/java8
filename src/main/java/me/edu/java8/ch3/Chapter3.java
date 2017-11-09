@@ -2,23 +2,31 @@ package me.edu.java8.ch3;
 
 
 import java.lang.reflect.Field;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
 
 
 public final class Chapter3 {
-
-    public static void main(String[] args) throws Exception {
-        task9();
-    }
 
     static void task1() throws Exception {
         int[] a = IntStream.iterate(100, (i) -> i + 1).limit(20).toArray();
@@ -174,5 +182,64 @@ public final class Chapter3 {
 //        Chapter3task5.transform(im, op.compose(Color::grayscale));
         
     }
+
+    static <T, U> List<U> map(List<T> list, Function<T, U> mapper) {
+        return list.stream().map(mapper).collect(Collectors.toList());
+    }
+
+    static void task20() throws Exception {
+        List<Integer> l = IntStream.range(0, 20).mapToObj(Integer::valueOf).collect(Collectors.toList());
+        List<String> r = map(l, Integer::toBinaryString);
+        System.out.println(r);
+    }
     
+    static <T, U> Future<U> map(Future<T> f, Function<T, U> mapper) {
+        return new Future<U>() {
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                return f.cancel(mayInterruptIfRunning);
+            }
+            
+            @Override
+            public boolean isDone() {
+                return f.isDone();
+            }
+            
+            @Override
+            public boolean isCancelled() {
+                return f.isCancelled();
+            }
+            
+            @Override
+            public U get() throws InterruptedException, ExecutionException {
+                return mapper.apply(f.get());
+            }
+            
+            @Override
+            public U get(long timeout, TimeUnit unit)
+                    throws InterruptedException, ExecutionException,
+                    TimeoutException {
+                return mapper.apply(f.get(timeout, unit));
+            }
+        };
+    }
+    
+    static void task21() throws Exception {
+        ExecutorService service = Executors.newCachedThreadPool();
+        Future<Instant> f = service.submit(() -> {
+            TimeUnit.SECONDS.sleep(5);
+            return Instant.now();
+        });
+        
+        Future<String> f2 = map(f, (i) -> i.atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME));
+        System.out.println(f2.get());
+        
+        service.shutdown();
+        service.awaitTermination(1, TimeUnit.HOURS);
+    }
+    
+    public static void main(String[] args) throws Exception {
+        task21();
+    }
+
 }
