@@ -36,13 +36,13 @@ class LatentImage2 {
         return this;
     }
 
-    LatentImage2 transform(ColorsTransformer ct) {
+    LatentImage2 transform(ImageTransformer ct) {
         Image img = applyPendings();
         in = transform0(img, ct);
         return this;
     }
 
-    private Image transform0(Image image, ColorsTransformer ct) {
+    private Image transform0(Image image, ImageTransformer ct) {
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
         WritableImage out = new WritableImage(width, height);
@@ -103,7 +103,7 @@ public class Chapter3task13 extends Application {
         stage.show();
     }
     
-    ColorsTransformer blur() {
+    ImageTransformer blur() {
         return (img, x, y, c) -> {
             int i = x > 0 ? x - 1 : x;
             int j = y > 0 ? y - 1 : y;
@@ -128,7 +128,7 @@ public class Chapter3task13 extends Application {
         };
     }
     
-    ColorsTransformer edge() {
+    ImageTransformer edge() {
         return (img, x, y, c) -> {
             Color w = x > 0 ? img.getPixelReader().getColor(x - 1, y) : Color.BLACK;
             Color n = y > 0 ? img.getPixelReader().getColor(x, y - 1) : Color.BLACK;
