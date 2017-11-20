@@ -22,7 +22,11 @@ public class Pair<T> {
     public <U> Pair<U> map(Function<? super T, ? extends U> mapper) {
         return new Pair<U>(mapper.apply(first), mapper.apply(second));
     }
-    
+
+    public <U> Pair<U> flatMap(Function<? super T, ? extends Pair<U>> mapper) {
+    	throw new UnsupportedOperationException();
+    }
+
     @Override
     public String toString() {
         return "Pair [first=" + first + ", second=" + second + "]";

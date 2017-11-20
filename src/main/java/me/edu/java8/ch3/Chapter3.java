@@ -3,12 +3,14 @@ package me.edu.java8.ch3;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,12 +18,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 
@@ -183,6 +188,22 @@ public final class Chapter3 {
         
     }
 
+    
+    static <T, U> U reduce(Stream<T> stream, U indentity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner) {
+    	return stream.reduce(indentity, accumulator, combiner);
+    }
+    
+    static void task19() {
+    	List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6);
+    	Integer sum = reduce(list.stream(), -21, (s, e) -> s + e, (s1, s2) -> s1 + s2 );
+    	System.out.println("sum: " + sum);
+    	
+    	System.out.println();
+    	String row = reduce(list.stream(), "Row\n", (s, e) -> s + " " + e + "\n", (s1, s2) -> s1 + s2);
+    	System.out.println(row);
+
+    }
+    
     static <T, U> List<U> map(List<T> list, Function<T, U> mapper) {
         return list.stream().map(mapper).collect(Collectors.toList());
     }
@@ -238,8 +259,16 @@ public final class Chapter3 {
         service.awaitTermination(1, TimeUnit.HOURS);
     }
     
+    static void task22() throws Exception {
+    	CompletableFuture<Void> cf = CompletableFuture
+    			.supplyAsync(() -> Stream.of(Month.values()))
+    			.thenApply((m) -> m.map(Object::toString))
+    			.thenCompose((m) -> CompletableFuture.runAsync(() -> m.forEach(System.out::println)));
+    	cf.get();
+    }
+    
     public static void main(String[] args) throws Exception {
-        task21();
+        task22();
     }
 
 }
