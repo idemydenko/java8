@@ -6,10 +6,9 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Chapter5task4 {
@@ -32,6 +31,10 @@ public class Chapter5task4 {
 		
 		cal("May 1987");
 		System.out.println();
+		
+		cal("Nov 2017");
+		System.out.println();
+
 	}
 
 	static YearMonth parse(String monthOfYaer) {
@@ -49,18 +52,37 @@ public class Chapter5task4 {
 		final StringBuilder sb = new StringBuilder(MONTH_OF_YEAR_FORMATTERS.get(2).format(ym));
 		
 		final String nl = System.lineSeparator();
-		final int fl = 4;
 		
 		sb.append(nl);
 		Stream.of(DayOfWeek.values()).map(DAY_OF_WEEK_FORMATTER::format).forEachOrdered(sb::append);
 		sb.append(nl);
 		
 		LocalDate start = ym.atDay(1);
-		IntStream.range(0, start.getDayOfWeek().getValue()).mapToObj((i) -> "    ").forEach(sb::append);
 		
-		Stream.iterate(start, (d) -> d.plusDays(1)).limit(ym.lengthOfMonth()).forEach((d) -> sb.append(d.getDayOfMonth()).append(" "));
+		Stream.iterate(start, (d) -> d.plusDays(1)).limit(ym.lengthOfMonth()).map(Chapter5task4::formatDayOfMonth).forEach(sb::append);
 		
 		System.out.println(sb);
+	}
+	
+	static String formatDayOfMonth(LocalDate date) {
+		int dayOfMonth = date.getDayOfMonth();
+		int dow = date.getDayOfWeek().getValue();
+		String prefix = " ";
+		String suffix = " ";
+		
+		if (dayOfMonth == 1) {
+			prefix += String.join("", Collections.nCopies(dow - 1, "    "));
+		}
+		
+		if (dayOfMonth < 10) {
+			prefix += " ";
+		}
+		
+		if (dow % 7 == 0) {
+			suffix += System.lineSeparator();
+		}
+
+		return String.join("", prefix, String.valueOf(dayOfMonth), suffix);
 	}
 	
 	static void cal(String monthOfYear) {
