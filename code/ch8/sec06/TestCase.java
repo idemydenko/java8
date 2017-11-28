@@ -1,3 +1,5 @@
+package ch8.sec06;
+
 import java.lang.annotation.*;
 
 @Repeatable(TestCases.class)

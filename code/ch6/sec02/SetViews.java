@@ -1,3 +1,5 @@
+package ch6.sec02;
+
 import java.util.*;
 import java.util.concurrent.*;
 

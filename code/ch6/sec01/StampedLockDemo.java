@@ -1,3 +1,5 @@
+package ch6.sec01;
+
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;

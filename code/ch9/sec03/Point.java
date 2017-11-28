@@ -1,3 +1,5 @@
+package ch9.sec03;
+
 public class Point {
    private int x, y;
 

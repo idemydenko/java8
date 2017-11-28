@@ -1,3 +1,5 @@
+package ch8.sec06;
+
 import java.beans.*;
 import java.io.*;
 import java.util.*;

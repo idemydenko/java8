@@ -1,3 +1,5 @@
+package ch8.sec06;
+
 public class TestCaseDemo {
    @TestCase(params="4", expected="24")
    @TestCase(params="0", expected="1")

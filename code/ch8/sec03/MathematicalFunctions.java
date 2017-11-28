@@ -1,3 +1,5 @@
+package ch8.sec03;
+
 import java.util.*;
 
 public class MathematicalFunctions {

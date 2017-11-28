@@ -2,13 +2,16 @@ package me.edu.java8.ch9;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
+
 import java.util.Scanner;
 
 public class Chapter9 {
 
 	static void task1() throws IOException {
-		
+
+		/*
+		 * without try-with-resources  
+		 */
 		Scanner in = null;
 		PrintWriter out = null;
 		
@@ -27,7 +30,7 @@ public class Chapter9 {
 				try {
 					out.close();
 				} catch (Exception e) {
-					
+					e.printStackTrace();
 				}
 			}
 
@@ -35,11 +38,14 @@ public class Chapter9 {
 				try {
 					in.close();
 				} catch (Exception e) {
-					
+					e.printStackTrace();
 				}
 			}			
 		}
 		
+		/*
+		 * with try-with-resources
+		 */
 		try (
 				Scanner scanner = new Scanner(System.in);
 				PrintWriter writer = new PrintWriter("/path/out.txt")

@@ -1,3 +1,5 @@
+package ch6.sec02;
+
 import java.io.*;
 import java.nio.charset.*;
 import java.nio.file.*;
