@@ -7,21 +7,24 @@ import java.util.concurrent.*;
 import java.util.stream.*;
 
 public class BulkOperations {
+	
    public static void main(String[] args) throws IOException {
       ConcurrentHashMap<String, Long> map = new ConcurrentHashMap<>();
       Path path = Paths.get("../../ch2/alice.txt");
+    
       String contents = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
       Stream<String> words = Stream.of(contents.split("[\\P{L}]+"));
+      
       words.parallel().forEach(w -> map.merge(w, 1L, Long::sum));
-
       long threshold = 1;
       String result = map.search(threshold, (k, v) -> v > 1000 ? k : null);
       System.out.println("result: " + result);
       System.out.println("\n---\n");
+      
       map.forEach(threshold,
          (k, v) -> System.out.print(k + " -> " + v + ", "));
-
       System.out.println("\n---\n");
+
       map.forEach(threshold,
          (k, v) -> k + " -> " + v + ", ", // Transformer
          System.out::print); // Consumer
