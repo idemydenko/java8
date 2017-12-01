@@ -2,7 +2,6 @@ package me.edu.java8.ch6;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -20,12 +20,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -158,7 +160,10 @@ public class Chapter6 {
 	}
 
 	static void task10() throws Exception {
+		
 		String url = "file:///D:/Doc/java8/api/java/nio/file/Files.html";
+		print(url);
+		ForkJoinPool.commonPool().awaitQuiescence(10, TimeUnit.SECONDS);
 	}
 	
 	static void print(String url) {
@@ -170,11 +175,25 @@ public class Chapter6 {
 			}
 		};
 		
-//		CompletableFuture.supplyAsync(loader).thenCompose((s) -> s.split("[\\P{L}]+").);
+		CompletableFuture.supplyAsync(loader)
+			.thenCompose((s) -> CompletableFuture.supplyAsync(() -> s.split("[\\P{L}]+")))
+			.thenApply(Stream::of)
+			.thenApply((st) -> st.filter((s) -> s.startsWith("link")))
+			.whenComplete((st, t) -> st.forEach(System.out::println));
+	}
+	
+	static void task11() throws Exception {
+		CompletableFuture<Integer> cf = repeat(() -> new Random().nextInt(), (i) -> i > 100);
+		System.out.println(cf.get());
+	}
+	
+	static <T> CompletableFuture<T> repeat(Supplier<T> action, Predicate<T> until) {
+		return CompletableFuture.supplyAsync(action)
+				.thenComposeAsync((r) -> until.test(r) ? CompletableFuture.completedFuture(r) : repeat(action, until));
 	}
 	
 	public static void main(String[] args) throws Exception {
-		task9();
+		task11();
 	}
 
 }
