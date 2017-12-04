@@ -3,12 +3,22 @@ package me.edu.java8.ch8;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntBinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.DoubleStream;
@@ -135,8 +145,134 @@ public class Chapter8 {
 		System.out.println(wordsList.size());
 	}
 	
+	static void task6() throws IOException {
+		Point2D p1 = new Point2D(1, 1);
+		Point2D p2 = new Point2D(2, 2);
+		Point2D p3 = new Point2D(3, 3);
+		
+		Rectangle2D r1 = new Rectangle2D(p1, 1, 1);
+		Rectangle2D r2 = new Rectangle2D(p2, 2, 2);
+		Rectangle2D r3 = new Rectangle2D(null, 3, 3);
+		
+		
+		List<Point2D> points = new ArrayList<>(Arrays.asList(p3, p1, p2));
+		Collections.sort(points, Point2D.CMP);
+		System.out.println("Points");
+		System.out.println(points.get(0).equals(p1));
+		System.out.println(points.get(1).equals(p2));
+		System.out.println(points.get(2).equals(p3));
+		
+		List<Rectangle2D> rectangles = new ArrayList<>(Arrays.asList(r3, r1, r2));
+		Collections.sort(rectangles, Rectangle2D.CMP);
+		System.out.println("Rectangles");
+		System.out.println(rectangles.get(0).equals(r1));
+		System.out.println(rectangles.get(1).equals(r2));
+		System.out.println(rectangles.get(2).equals(r3));		
+	}
+	
+	static void task7() throws IOException {
+		Comparator<Integer> c1 = Comparator.nullsFirst(Comparator.naturalOrder());  
+		Comparator<Integer> c2 = Comparator.nullsLast(Comparator.reverseOrder());
+		
+		Integer[] ints = new Integer[] {null, 2, 1, 0};
+		
+		Integer[] arr1 = ints.clone();
+		Arrays.sort(arr1, c1.reversed());
+		
+		Integer[] arr2 = ints.clone();
+		Arrays.sort(arr2, c2);
+		
+		System.out.println(Arrays.equals(arr1, arr2));
+		System.out.println("A1: " + Arrays.toString(arr1));
+		System.out.println("A2: " + Arrays.toString(arr2));
+	}
+	
+	static void task8() throws IOException {
+		Queue<Integer> queue = new LinkedList<>();
+		queue.add(31);
+		putString(queue);
+		System.out.println(queue);
+		
+		queue = new LinkedList<>();
+		Queue<Integer> checked =  Collections.checkedQueue(queue, Integer.class);
+		checked.add(31);
+		try {
+			putString(checked);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	static void putString(Queue queue) {
+		queue.add("Integer");
+	}
+	
+	static void task10() throws IOException {
+		Path src = Paths.get(System.getenv("JAVA_HOME"), "src.zip", "/");
+		
+		try(FileSystem fs = FileSystems.newFileSystem(src, null)) {
+			fs.getRootDirectories().forEach((dir) -> {
+				try {
+					try (Stream<Path> paths = Files.walk(dir)) {
+						paths.filter(Files::isRegularFile).forEach((Path file) -> {
+							try {
+								String content = new String(Files.readAllBytes(file));
+								boolean found = Stream.of(content.split("[\\P{L}]+")).anyMatch((w) -> "volatile".equals(w) || "transient".equals(w));
+								if (found) {
+									System.out.println(new StringBuilder(file.toString()).substring(1).replaceAll("/", "."));
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+	
+	static void task11() throws IOException {
+		String username = "Admin";
+		String password = "Superuser";
+		
+		String original = username + ":" + password;
+		
+		String encoded = Base64.getEncoder().encodeToString(original.getBytes());		
+		System.out.println(encoded);
+		String decoded = new String(Base64.getDecoder().decode(encoded));
+		System.out.println(decoded);
+	}
+	
+	static void task14() throws IOException {
+		AtomicInteger c = new AtomicInteger(0);
+		
+		Object o = new Object();
+		
+		Objects.requireNonNull(o, "Step " + (c.incrementAndGet()));
+		Objects.requireNonNull(o, "Step " + (c.incrementAndGet()));
+		Objects.requireNonNull(o, "Step " + (c.incrementAndGet()));
+		Objects.requireNonNull(o, "Step " + (c.incrementAndGet()));
+
+		System.out.println(c);
+		
+		Objects.requireNonNull(o, () -> "St " + c.incrementAndGet());
+		Objects.requireNonNull(o, () -> "St " + c.incrementAndGet());
+		Objects.requireNonNull(o, () -> "St " + c.incrementAndGet());
+		Objects.requireNonNull(o, () -> "St " + c.incrementAndGet());
+		
+		System.out.println(c);
+		
+		try {
+			Objects.requireNonNull(null, () -> "St " + c.incrementAndGet());
+		} catch (Exception e) {}
+		System.out.println(c);
+	}
+	
 	public static void main(String[] args) throws Exception {
-		task5();
+		task14();
 	}
 
 }
